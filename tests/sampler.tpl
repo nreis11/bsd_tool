@@ -56,3 +56,12 @@
     default=" "
 }
 {include file="global/widgets/dynamic_mapping/email.tpl" options=$options}
+
+{* CALENDAR *}
+{assign_array var_name="calendar_options"
+    name="ApplicationDeadline"
+    label="Søknadsfristen"
+    default=$job.end_date.value
+}
+
+{include file="global/widgets/dynamic_mapping/input_date_calendar_widget.tpl" options=$calendar_options}
