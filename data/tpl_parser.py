@@ -1,5 +1,6 @@
 import re
 from data.dropdown_control import Dropdown_Control
+from data.input_control import Input_Control
 
 # Read file
 # Capture data: assign, ignore [comments, if statements], includes
@@ -60,8 +61,12 @@ def get_tuple(data):
     return (key, value)
 
 
-def get_dropdown_objects(data_dict):
-    dropdown_objs = []
+def get_default_list(default_values):
+    return default_values.split('|default:')
+
+
+def get_dropdown_dicts(data_dict):
+    dropdown_dicts = []
 
     for idx, option in enumerate(data_dict['options']):
         new_dropdown = {}
@@ -81,8 +86,49 @@ def get_dropdown_objects(data_dict):
                                    for option in data_dict['options'][:idx]]
         new_dropdown['children'] = [option[0]
                                     for option in data_dict['options'][idx + 1:]]
-        dropdown_objs.append(new_dropdown)
-    return dropdown_objs
+        dropdown_dicts.append(new_dropdown)
+    return dropdown_dicts
+
+
+def get_non_dropdown_dict(data_dict):
+    control_dict = {}
+    for key, value in data_dict['options']:
+        if key == 'default':
+            control_dict['defaults'] = get_default_list(value)
+        elif key == 'required' and value:
+            control_dict[key] = True
+        else:
+            control_dict[key] = value
+    print(control_dict)
+    return control_dict
+
+
+def create_controls(widget_type, data_dict):
+    controls = []
+    if widget_type == 'multi_tier_dropdown_widget':
+        # If multi tier, multiple dropdown dicts will be created
+        dropdowns_dicts = get_dropdown_dicts(data_dict)
+        dropdown_objs = list(
+            map(lambda x: Dropdown_Control(**x), dropdowns_dicts))
+        controls.append(dropdown_objs)
+    elif widget_type == 'input_widget':
+        input_control_dict = get_non_dropdown_dict(data_dict)
+        input_control_obj = Input_Control(**input_control_dict)
+        controls.append(input_control_obj)
+    elif widget_type == 'textarea_widget':
+        data_dict["options"].append(
+            ("type", "textarea"))
+        input_control_dict = get_non_dropdown_dict(data_dict)
+        input_control_obj = Input_Control(**input_control_dict)
+        controls.append(input_control_obj)
+    elif widget_type == 'email':
+        data_dict["options"].append(("type", "email"))
+        input_control_dict = get_non_dropdown_dict(data_dict)
+        input_control_obj = Input_Control(**input_control_dict)
+        controls.append(input_control_obj)
+    for control in controls:
+        print(control)
+    return controls
 
 
 with open("tests/sampler.tpl") as tpl_obj:
@@ -92,6 +138,8 @@ with open("tests/sampler.tpl") as tpl_obj:
     include_sections = re.findall(include_pattern, contents)
     data_sections = re.split(include_pattern, contents)
     data_sections = [x.strip() for x in data_sections[::2] if x]
+    master_controls = []
+
     for idx, match in enumerate(include_sections):
         match = match.strip()
         widget_type = get_widget_type(match)
@@ -113,13 +161,9 @@ with open("tests/sampler.tpl") as tpl_obj:
             if type(value) == list:
                 var_data_dict[key] = list(map(get_tuple, value))
 
-        controls = []
-        if widget_type == 'multi_tier_dropdown_widget':
-            dropdowns = get_dropdown_objects(var_data_dict)
-            dropdown_objs = list(
-                map(lambda x: Dropdown_Control(**x), dropdowns))
-            for dropdown in dropdown_objs:
-                print(dropdown)
+        # Pass each widget type and corresponding data to create control instances
+        master_controls.extend(create_controls(widget_type, var_data_dict))
+        # print(master_controls)
         # print(assigns)
         # print(assign_arrays)
         # for key, value in var_data_dict:

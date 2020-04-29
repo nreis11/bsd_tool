@@ -51,9 +51,9 @@
 
 {* EMAIL *}
 {assign_array var_name="options"
-    name="PosterEmail"
-    label="LinkedIn Profile Email"
-    default=" "
+    name="JobEmail"
+    label="Recruiter Email Address"
+    required="required"
 }
 {include file="global/widgets/dynamic_mapping/email.tpl" options=$options}
 

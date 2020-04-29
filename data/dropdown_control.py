@@ -16,23 +16,23 @@ class Dropdown_Control(Control):
     def __str__(self):
         output = (
             f'{{\n'
-            f'  name: "{self.name}"\n'
-            f'  type: {self.type}\n'
-            f'  label: "{self.label}"\n'
+            f'  name: "{self.name}",\n'
+            f'  type: {self.type},\n'
+            f'  label: "{self.label},"\n'
             f'  filename: "{self.filename}"\n'
         )
         if self.required:
-            output += f'  required: true\n'
+            output += f',  required: true\n'
         if self.parents:
-            output += f'  parents: {self.parents}\n'
-            output += f'  requirementsMet: (controls) => getValue("{self.parents[-1]}", controls)\n'
+            output += f',  parents: {self.parents}\n'
+            output += f',  requirementsMet: (controls) => getValue("{self.parents[-1]}", controls)\n'
         if self.children:
-            output += f'  children: {self.children}\n'
+            output += f',  children: {self.children}\n'
         if self.value:
-            output += f'  value: {self.value}\n'
+            output += f',  value: {self.value}\n'
         if self.selections:
-            output += f'  multi: true\n'
-            output += f'  selections: {self.selections}\n'
+            output += f',  multi: true\n'
+            output += f',  selections: {self.selections}\n'
 
         output += f'}}\n'
         return output
