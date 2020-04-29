@@ -1,3 +1,5 @@
+{include file="global/dynamic_mapping/validation.tpl"}
+
 {* DROPDOWN - MULTI TIER *}
 {assign var='filename' value="Functions"}
 {assign_array var_name="dropdown_options"
