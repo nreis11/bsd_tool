@@ -52,7 +52,7 @@ class Control():
 
     import_options = {
         "job_data": {"is_required": False, "text": 'import { JobData } from "equest";'},
-        "get_value": {"is_required": False, "text": 'import { getValue } from "./helpers";'},
+        "get_value": {"is_required": False, "text": 'import { getValue } from "./helpers";'}
         # "control_types": {"is_required": True, "text": f'import {get_control_types()} from "./ControlMap";'}
     }
 
@@ -68,18 +68,17 @@ class Control():
     @classmethod
     def get_value(cls, default):
         if default in cls.job_data_map:
-            cls.import_options["job_data"] = True
+            cls.import_options["job_data"]["is_required"] = True
             return cls.job_data_map[default]
         return f'"{default}"'
 
     @classmethod
     def get_control_types(cls):
-        return ", ".join(cls.control_types)
+        control_types = ", ".join(cls.control_types)
+        import_str = f'import {{ {control_types} }} from "./ControlMap";'
+        return import_str
 
     @staticmethod
     def get_formmatted_value(value_list):
+        """Format default list into proper mappings ($job -> JobData) or return value unchanged as string."""
         return " || ".join([Control.get_value(value) for value in value_list])
-
-# control_map_imports = ", ".join(
-#     list(set([control.type for control in config_list])))
-# print(control_map_imports)

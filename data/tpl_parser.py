@@ -1,6 +1,8 @@
+import sys
 import re
 from data.dropdown_control import Dropdown_Control
 from data.input_control import Input_Control
+from data.control import Control
 
 # Read file
 # Capture data: assign, ignore [comments, if statements], includes
@@ -106,14 +108,14 @@ def get_non_dropdown_dict(data_dict):
 
 def create_controls(widget_type, data_dict):
     control_objs = []
-    print(data_dict)
+    # print(data_dict)
     if widget_type == 'multi_tier_dropdown_widget':
         # If multi tier, multiple dropdown dicts will be created
         dropdowns_dicts = get_dropdown_dicts(data_dict)
         dropdown_objs = list(
             map(lambda x: Dropdown_Control(**x), dropdowns_dicts))
-        for dropdown in dropdown_objs:
-            print(dropdown)
+        # for dropdown in dropdown_objs:
+        #     print(dropdown)
         return dropdown_objs
     elif widget_type == 'single_multiselection_tier_dropdown_widget':
         control_dict = get_non_dropdown_dict(data_dict)
@@ -131,50 +133,76 @@ def create_controls(widget_type, data_dict):
         input_control_dict = get_non_dropdown_dict(data_dict)
         control_obj = Input_Control(**input_control_dict)
     else:
-        raise Exception(f'Unknown widget type "{widget_type}"')
+        print(f'Unsupported widget type "{widget_type}". Skipping.')
+        return []
     control_objs.append(control_obj)
-    print(control_obj)
+    # print(control_obj)
     return control_objs
 
 
-with open("tests/sampler.tpl") as tpl_obj:
-    contents = tpl_obj.read().strip()
-    include_pattern = re.compile(
-        r'^\s*\{include\s*file=[\'"]global/widgets/dynamic_mapping/(.*?)\}', re.DOTALL | re.MULTILINE)
-    include_sections = re.findall(include_pattern, contents)
-    data_sections = re.split(include_pattern, contents)
-    data_sections = [x.strip() for x in data_sections[::2] if x]
-    master_controls = []
+def main():
+    filename = get_filename()
+    with open(filename) as tpl_obj:
+        contents = tpl_obj.read().strip()
+        include_pattern = re.compile(
+            r'^\s*\{include\s*file=[\'"]global/widgets/dynamic_mapping/(.*?)\}', re.DOTALL | re.MULTILINE)
+        include_sections = re.findall(include_pattern, contents)
+        data_sections = re.split(include_pattern, contents)
+        data_sections = [x.strip() for x in data_sections[::2] if x]
+        master_controls = []
 
-    for idx, match in enumerate(include_sections):
-        match = match.strip()
-        widget_type = get_widget_type(match)
-        print(widget_type)
-        var_data_dict = get_include_variable(match)
-        var_assigns = get_assign_vars(data_sections[idx])
-        assign_arrays = get_assign_array_vars(data_sections[idx])
-        assign_arrays.extend(var_assigns)
-        name_value_dict = {}
-        for pair in assign_arrays:
-            name_value_dict[pair[0]] = pair[1]
-        for key, value in var_data_dict.items():
-            try:
-                var_data_dict[key] = name_value_dict[var_data_dict[key]]
-            except KeyError:
-                print(f'Missing {key} key in variable dict')
+        for idx, match in enumerate(include_sections):
+            match = match.strip()
+            widget_type = get_widget_type(match)
+            var_data_dict = get_include_variable(match)
+            var_assigns = get_assign_vars(data_sections[idx])
+            assign_arrays = get_assign_array_vars(data_sections[idx])
+            assign_arrays.extend(var_assigns)
+            name_value_dict = {}
+            for pair in assign_arrays:
+                name_value_dict[pair[0]] = pair[1]
+            for key, value in var_data_dict.items():
+                try:
+                    var_data_dict[key] = name_value_dict[var_data_dict[key]]
+                except KeyError:
+                    print(f'Missing {key} key in variable dict')
 
-        # Map lists of strings intu tuples (key, value)
-        for key, value in var_data_dict.items():
-            if type(value) == list:
-                var_data_dict[key] = list(map(get_tuple, value))
+            # Map lists of strings intu tuples (key, value)
+            for key, value in var_data_dict.items():
+                if type(value) == list:
+                    var_data_dict[key] = list(map(get_tuple, value))
 
-        # Pass each widget type and corresponding data to create control instances
-        master_controls.extend(create_controls(widget_type, var_data_dict))
-        print(master_controls)
-        # print(assigns)
-        # print(assign_arrays)
-        # for key, value in var_data_dict:
+            # Pass each widget type and corresponding data to create control instances
+            master_controls.extend(create_controls(widget_type, var_data_dict))
+        write_to_file(master_controls)
+        return master_controls
 
-        # Get all includes
-        # Get all arg vars
-        # Inject arg vars into include dict
+
+def write_to_file(master_controls):
+    filename = "output.js"
+    with open(filename, "w") as output_file:
+        output = []
+
+        for import_type, options in Control.import_options.items():
+            if options["is_required"]:
+                output.append(options["text"])
+        output.append(Control.get_control_types())
+        master_controls_str = ", ".join(
+            list(map(lambda control: str(control), master_controls)))
+        output.append(f'export default [\n{master_controls_str}];')
+
+        output_file.write("\n\n".join(output))
+        print(f'Successfully translated in "{filename}".')
+
+
+def get_filename():
+    if len(sys.argv) < 2:
+        print("Please supply a filename as argv")
+        sys.exit(0)
+    filename = sys.argv[1]
+    print("Opening", filename)
+    return filename
+
+
+if __name__ == "__main__":
+    main()

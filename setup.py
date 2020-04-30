@@ -1,1 +1,3 @@
-import data.tpl_parser
+from data import tpl_parser
+
+tpl_parser.main()
