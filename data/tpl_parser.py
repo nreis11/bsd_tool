@@ -183,7 +183,7 @@ def write_to_file(master_controls):
     with open(filename, "w") as output_file:
         output = []
 
-        for import_type, options in Control.import_options.items():
+        for options in Control.import_options.values():
             if options["is_required"]:
                 output.append(options["text"])
         output.append(Control.get_control_types())

@@ -67,6 +67,7 @@ class Control():
 
     @classmethod
     def get_value(cls, default):
+        """Map bsd2 job data to bsd3, otherwise return unmodified value."""
         if default in cls.job_data_map:
             cls.import_options["job_data"]["is_required"] = True
             return cls.job_data_map[default]
@@ -74,11 +75,12 @@ class Control():
 
     @classmethod
     def get_control_types(cls):
+        """Format control imports as str."""
         control_types = ", ".join(cls.control_types)
         import_str = f'import {{ {control_types} }} from "./ControlMap";'
         return import_str
 
     @staticmethod
     def get_formmatted_value(value_list):
-        """Format default list into proper mappings ($job -> JobData) or return value unchanged as string."""
+        """Format default list into proper mappings ($job -> JobData) or return value unchanged as str."""
         return " || ".join([Control.get_value(value) for value in value_list])

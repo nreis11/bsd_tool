@@ -14,7 +14,6 @@ class Dropdown_Control(Control):
         if self.parents:
             Control.import_options["get_value"]["is_required"] = True
 
-    # TODO: NEED TO FIGURE OUT A GOOD WAY TO ADD COMMAS
     def __str__(self):
         output = (
             f'{{\n'
