@@ -4,16 +4,6 @@ from data.dropdown_control import Dropdown_Control
 from data.input_control import Input_Control
 from data.control import Control
 
-# Read file
-# Capture data: assign, ignore [comments, if statements], includes
-
-
-sample = """{include file="global/widgets/dynamic_mapping/single_multiselection_tier_dropdown_widget.tpl"
-    filename=$filename
-    options=$dropdown_options
-}
-"""
-
 
 def get_widget_type(include_section):
     widget_type = re.compile(
@@ -165,7 +155,8 @@ def main():
                 try:
                     var_data_dict[key] = name_value_dict[var_data_dict[key]]
                 except KeyError:
-                    print(f'Missing {key} key in variable dict')
+                    print(
+                        f'Missing {key} key in variable dict for match: {match}')
 
             # Map lists of strings intu tuples (key, value)
             for key, value in var_data_dict.items():
