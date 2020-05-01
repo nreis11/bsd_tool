@@ -27,7 +27,7 @@ def get_include_variable(include_section):
 
 def get_assign_vars(section):
     assign_pattern = re.compile(
-        r'\{assign var=[\'"](.*)[\'"] value=[\'"](.*?)[\'"]\}')
+        r'\{assign var=[\'"](.*)[\'"] value=[\'"]*(.*?)[\'"]*\}')
     matches = assign_pattern.findall(section)
     if matches:
         return matches
@@ -96,9 +96,14 @@ def get_non_dropdown_dict(data_dict):
     return control_dict
 
 
-def create_controls(widget_type, data_dict):
+def create_controls(widget_type, data_dict, copies=1):
     control_objs = []
-    # print(data_dict)
+
+    # Remove unused var
+    for pair in data_dict["options"]:
+        if pair[0] == "nesting_level" or pair[0] == "selected":
+            data_dict["options"].remove(pair)
+
     if widget_type == 'multi_tier_dropdown_widget':
         # If multi tier, multiple dropdown dicts will be created
         dropdowns_dicts = get_dropdown_dicts(data_dict)
@@ -109,24 +114,35 @@ def create_controls(widget_type, data_dict):
         return dropdown_objs
     elif widget_type == 'single_multiselection_tier_dropdown_widget':
         control_dict = get_non_dropdown_dict(data_dict)
-        control_obj = Dropdown_Control(**control_dict)
+        control_objs.extend(get_control_copies(
+            Dropdown_Control, control_dict, copies))
     elif widget_type == 'input_widget':
         input_control_dict = get_non_dropdown_dict(data_dict)
-        control_obj = Input_Control(**input_control_dict)
+        control_objs.extend(get_control_copies(
+            Input_Control, input_control_dict, copies))
     elif widget_type == 'textarea_widget':
         data_dict["options"].append(
             ("type", "textarea"))
         input_control_dict = get_non_dropdown_dict(data_dict)
-        control_obj = Input_Control(**input_control_dict)
+        control_objs.extend(get_control_copies(
+            Input_Control, input_control_dict, copies))
     elif widget_type == 'email':
         data_dict["options"].append(("type", "email"))
         input_control_dict = get_non_dropdown_dict(data_dict)
-        control_obj = Input_Control(**input_control_dict)
+        control_objs.extend(get_control_copies(
+            Input_Control, input_control_dict, copies))
     else:
         print(f'Unsupported widget type "{widget_type}". Skipping.')
         return []
-    control_objs.append(control_obj)
     # print(control_obj)
+    return control_objs
+
+
+def get_control_copies(control_class, control_dict, copies):
+    control_objs = []
+    for num in range(copies):
+        control_obj = control_class(**control_dict)
+        control_objs.append(control_obj)
     return control_objs
 
 
@@ -148,15 +164,21 @@ def main():
             var_assigns = get_assign_vars(data_sections[idx])
             assign_arrays = get_assign_array_vars(data_sections[idx])
             assign_arrays.extend(var_assigns)
+            copies = 1
             name_value_dict = {}
+
+            # Check if multiple controls needed
             for pair in assign_arrays:
+                if pair[0] == 'select':
+                    copies = int(pair[1])
                 name_value_dict[pair[0]] = pair[1]
+
             for key, value in var_data_dict.items():
                 try:
                     var_data_dict[key] = name_value_dict[var_data_dict[key]]
                 except KeyError:
                     print(
-                        f'Missing {key} key in variable dict for match: {match}')
+                        f'Warning: Missing {key} value for match: {match}')
 
             # Map lists of strings intu tuples (key, value)
             for key, value in var_data_dict.items():
@@ -164,7 +186,8 @@ def main():
                     var_data_dict[key] = list(map(get_tuple, value))
 
             # Pass each widget type and corresponding data to create control instances
-            master_controls.extend(create_controls(widget_type, var_data_dict))
+            master_controls.extend(create_controls(
+                widget_type, var_data_dict, copies))
         write_to_file(master_controls)
         return master_controls
 
