@@ -178,9 +178,9 @@ def write_to_file(master_controls):
             if options["is_required"]:
                 output.append(options["text"])
         output.append(Control.get_control_types())
-        master_controls_str = ", ".join(
+        master_controls_str = ",\n".join(
             list(map(lambda control: str(control), master_controls)))
-        output.append(f'export default [\n{master_controls_str}];')
+        output.append(f'export default [\n{master_controls_str}\n];')
 
         output_file.write("\n\n".join(output))
         print(f'Successfully translated in "{filename}".')

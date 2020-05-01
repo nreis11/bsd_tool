@@ -18,20 +18,21 @@ class Input_Control(Control):
         self.placeholder = placeholder
 
     def __str__(self):
+        indent = ' ' * 4
         output = (
-            f'{{\n'
-            f'  name: "{self.name}",\n'
-            f'  type: {self.type},\n'
-            f'  label: "{self.label}",\n'
+            f'  {{\n'
+            f'{indent}name: "{self.name}",\n'
+            f'{indent}type: {self.type},\n'
+            f'{indent}label: "{self.label}",\n'
         )
         if self.required:
-            output += f'  required: true,\n'
+            output += f'{indent}required: true,\n'
         if self.maxlength:
-            output += f'  maxLength: {self.maxlength},\n'
+            output += f'{indent}maxLength: {self.maxlength},\n'
         if self.value:
-            output += f'  value: {self.value},\n'
+            output += f'{indent}value: {self.value},\n'
         if self.placeholder:
-            output += f'  placeholder: {self.placeholder},\n'
+            output += f'{indent}placeholder: {self.placeholder},\n'
 
-        output += f'}}'
+        output += f'  }}'
         return output
