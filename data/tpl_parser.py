@@ -150,6 +150,8 @@ def main():
     filename = get_filename()
     with open(filename) as tpl_obj:
         contents = tpl_obj.read().strip()
+        comment_pattern = re.compile(r'\{\*.*?\*\}', re.DOTALL)
+        contents = re.sub(comment_pattern, '', contents)
         include_pattern = re.compile(
             r'^\s*\{include\s*file=[\'"]global/widgets/dynamic_mapping/(.*?)\}', re.DOTALL | re.MULTILINE)
         include_sections = re.findall(include_pattern, contents)
