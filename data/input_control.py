@@ -8,7 +8,9 @@ class Input_Control(Control):
         "number": "CONTROL_TYPE_NUMBER",
         "textarea": "CONTROL_TYPE_TEXT",
         "email": "CONTROL_TYPE_EMAIL",
-        "string": "CONTROL_TYPE_STRING"
+        "string": "CONTROL_TYPE_STRING",
+        "calendar": "CONTROL_TYPE_DATE",
+        "lookup": "CONTROL_TYPE_LOCATION_LOOKUP"
     }
 
     def __init__(self, name, label, required=False, defaults=[], maxlength='', type="string", placeholder=None):

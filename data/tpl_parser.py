@@ -107,40 +107,40 @@ def create_controls(widget_type, data_dict, copies=1):
     if widget_type == 'multi_tier_dropdown_widget':
         # If multi tier, multiple dropdown dicts will be created
         dropdowns_dicts = get_dropdown_dicts(data_dict)
-        dropdown_objs = list(
-            map(lambda x: Dropdown_Control(**x), dropdowns_dicts))
-        # for dropdown in dropdown_objs:
-        #     print(dropdown)
-        return dropdown_objs
+        for _ in range(copies):
+            control_objs.extend(list(
+                map(lambda x: Dropdown_Control(**x), dropdowns_dicts)))
+        return control_objs
     elif widget_type == 'single_multiselection_tier_dropdown_widget':
         control_dict = get_non_dropdown_dict(data_dict)
         control_objs.extend(get_control_copies(
             Dropdown_Control, control_dict, copies))
+        return control_objs
     elif widget_type == 'input_widget':
-        input_control_dict = get_non_dropdown_dict(data_dict)
-        control_objs.extend(get_control_copies(
-            Input_Control, input_control_dict, copies))
+        pass
     elif widget_type == 'textarea_widget':
         data_dict["options"].append(
             ("type", "textarea"))
-        input_control_dict = get_non_dropdown_dict(data_dict)
-        control_objs.extend(get_control_copies(
-            Input_Control, input_control_dict, copies))
     elif widget_type == 'email':
         data_dict["options"].append(("type", "email"))
-        input_control_dict = get_non_dropdown_dict(data_dict)
-        control_objs.extend(get_control_copies(
-            Input_Control, input_control_dict, copies))
+    elif widget_type == 'input_date_calendar_widget':
+        data_dict["options"].append(("type", "calendar"))
+    elif widget_type == 'lookup_widget':
+        data_dict["options"].append(("type", "lookup"))
     else:
         print(f'Unsupported widget type "{widget_type}". Skipping.')
         return []
-    # print(control_obj)
+
+    input_control_dict = get_non_dropdown_dict(data_dict)
+    control_objs.extend(get_control_copies(
+        Input_Control, input_control_dict, copies))
+
     return control_objs
 
 
 def get_control_copies(control_class, control_dict, copies):
     control_objs = []
-    for num in range(copies):
+    for _ in range(copies):
         control_obj = control_class(**control_dict)
         control_objs.append(control_obj)
     return control_objs
