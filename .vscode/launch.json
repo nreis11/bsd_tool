@@ -8,7 +8,7 @@
       "name": "Python: Current File",
       "type": "python",
       "request": "launch",
-      "program": "/home/nreis/Dropbox/Utilities/bsd2_to_bsd3/setup.py",
+      "program": "${workspaceFolder}/setup.py",
       "console": "integratedTerminal"
     }
   ]
