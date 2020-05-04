@@ -21,15 +21,6 @@ multi_selection_dropdown_input = {
 
 class TestInput_Control(unittest.TestCase):
 
-    # def setUp(self):
-    #     csv2yaml.main(TestControl.test_filename + ".csv")
-    #     sys.argv.pop()
-
-    # def tearDown(self):
-    #     test_output = TestControl.test_filename + ".yaml"
-    #     if os.path.exists(test_output):
-    #         os.remove(test_output)
-
     def test_multi_tier_dropdown(self):
         """Test that class creates dropdown object with all data"""
         result = dropdown_control.Dropdown_Control(**multi_tier_dropdown_input)

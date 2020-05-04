@@ -12,6 +12,7 @@ class TestTpl_Parser(unittest.TestCase):
     def tearDown(self):
         test_output = TEST_DIR + "sampler_result.js"
         if os.path.exists(test_output):
+            print("Removing", test_output)
             os.remove(test_output)
 
     def test_output(self):

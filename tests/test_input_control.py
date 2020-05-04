@@ -14,15 +14,6 @@ string_input_data = {
 
 class TestInput_Control(unittest.TestCase):
 
-    # def setUp(self):
-    #     csv2yaml.main(TestControl.test_filename + ".csv")
-    #     sys.argv.pop()
-
-    # def tearDown(self):
-    #     test_output = TestControl.test_filename + ".yaml"
-    #     if os.path.exists(test_output):
-    #         os.remove(test_output)
-
     def test_string_input(self):
         """Test that class creates string object with all data"""
         result = input_control.Input_Control(**string_input_data)
