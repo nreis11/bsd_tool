@@ -49,7 +49,7 @@ def get_assign_array_vars(section):
 
 def get_tuple(data):
     key, value = data.split("=")
-    value = value.strip('\'"')
+    value = value.strip('\'" ')
     return (key, value)
 
 
@@ -146,8 +146,8 @@ def get_control_copies(control_class, control_dict, copies):
     return control_objs
 
 
-def main():
-    filename = get_filename()
+def main(test=False):
+    filename = get_filename(test)
     with open(filename) as tpl_obj:
         contents = tpl_obj.read().strip()
         comment_pattern = re.compile(r'\{\*.*?\*\}', re.DOTALL)
@@ -190,12 +190,16 @@ def main():
             # Pass each widget type and corresponding data to create control instances
             master_controls.extend(create_controls(
                 widget_type, var_data_dict, copies))
-        write_to_file(master_controls)
+        write_to_file(master_controls, test)
         return master_controls
 
 
-def write_to_file(master_controls):
-    filename = "output.js"
+def write_to_file(master_controls, test=False):
+    if test:
+        filename = "tests/sampler_result.js"
+    else:
+        filename = "output.js"
+
     with open(filename, "w") as output_file:
         output = []
 
@@ -211,11 +215,14 @@ def write_to_file(master_controls):
         print(f'Successfully translated in "{filename}".')
 
 
-def get_filename():
-    if len(sys.argv) < 2:
+def get_filename(test=False):
+    if test:
+        filename = 'tests/sampler_bsd2.tpl'
+    elif len(sys.argv) < 2:
         print("Please supply a filename as argv")
         sys.exit(0)
-    filename = sys.argv[1]
+    else:
+        filename = sys.argv[1]
     print("Opening", filename)
     return filename
 

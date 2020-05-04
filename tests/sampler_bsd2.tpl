@@ -67,3 +67,11 @@
 }
 
 {include file="global/widgets/dynamic_mapping/input_date_calendar_widget.tpl" options=$calendar_options}
+
+{* LOOKUP *}
+{assign_array var_name="lookup_options"
+    label="Advertising Location"
+    name="PostingLocation"
+    default=$default_location
+}
+{include file="global/widgets/dynamic_mapping/lookup_widget.tpl" options=$lookup_options}
