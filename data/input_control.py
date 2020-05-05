@@ -34,7 +34,7 @@ class Input_Control(Control):
         if self.value:
             output += f'{indent}value: {self.value},\n'
         if self.placeholder:
-            output += f'{indent}placeholder: {self.placeholder},\n'
+            output += f'{indent}placeholder: "{self.placeholder}",\n'
 
         output += f'  }}'
         return output
