@@ -50,6 +50,8 @@ def get_assign_array_vars(section):
 def get_tuple(data):
     key, value = data.split("=")
     value = value.strip('\'" ')
+    if '$' in value and not "$job" in value:
+        print(f'Warning: Replace {value} with value for prop {key}')
     return (key, value)
 
 
