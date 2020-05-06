@@ -4,7 +4,7 @@ import { getValue } from "./helpers";
 
 import { CONTROL_TYPE_DROPDOWN, CONTROL_TYPE_NUMBER, CONTROL_TYPE_STRING, CONTROL_TYPE_TEXT, CONTROL_TYPE_EMAIL, CONTROL_TYPE_DATE, CONTROL_TYPE_LOCATION_LOOKUP } from "./ControlMap";
 
-export default [
+const config = [
   {
     name: "Function",
     type: CONTROL_TYPE_DROPDOWN,
@@ -69,3 +69,5 @@ export default [
     value: "$default_location",
   }
 ];
+
+export default config;

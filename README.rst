@@ -17,3 +17,4 @@ python3 setup.py filename.tpl
 # Known issues
 BSD2 loops should translate correctly, but num suffixes will be absent e.g. Category1, Category2
 If a value is set to a variable in the `assign_array` function, the data will not be translated correctly.
+Conditionals are ignored

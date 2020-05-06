@@ -209,7 +209,8 @@ def write_to_file(master_controls, test=False):
         output.append(Control.get_control_types())
         master_controls_str = ",\n".join(
             list(map(lambda control: str(control), master_controls)))
-        output.append(f'export default [\n{master_controls_str}\n];')
+        output.append(
+            f'const config = [\n{master_controls_str}\n];\n\nexport default config;')
 
         output_file.write("\n\n".join(output))
         print(f'Successfully translated in "{filename}".')
