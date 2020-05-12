@@ -64,13 +64,14 @@ def get_dropdown_dicts(data_dict):
 
     for idx, option in enumerate(data_dict['options']):
         new_dropdown = {'name': option[0], 'filename': data_dict['filename']}
+        label = option[0]
         required = option[1]
         if required:
             new_dropdown['required'] = True
         if 'labels' in data_dict:
-            label = data_dict['labels'][idx][1]
-        else:
-            label = option[0]
+            for name, c_label in data_dict['labels']:
+                if name == option[0]:
+                    label = c_label
         new_dropdown['label'] = label
         if 'default' in data_dict:
             new_dropdown["defaults"] = [data_dict['default'][idx][1]]

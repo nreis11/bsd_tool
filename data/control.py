@@ -43,9 +43,12 @@ class Control():
         "$job.travel_percentage.value": "JobData.travelPercentage",
         "$job.benefits.value": "JobData.benefits",
         "$job.company_description.value": "JobData.companyDescription",
+        "$job.company_description.en": "JobData.companyDescription",
         "$job.description.value": "JobData.description",
+        "$job.description_en.value": "JobData.description",
         "$job.skills.value": "JobData.skills",
-        "$job.title.value": "JobData.title"
+        "$job.skills_en.value": "JobData.skills",
+        "$job.title.en": "JobData.title"
     }
 
     control_types = []
