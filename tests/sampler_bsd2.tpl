@@ -75,3 +75,10 @@
     default=$default_location
 }
 {include file="global/widgets/dynamic_mapping/lookup_widget.tpl" options=$lookup_options}
+
+{* WARNING *}
+{assign_array var_name="options"
+    label='Warning'
+    value="* Additional charges applied by board if these fields are set to yes"
+}
+{include file="global/widgets/dynamic_mapping/warning_widget.tpl" options=$options}

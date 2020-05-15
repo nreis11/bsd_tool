@@ -13,11 +13,12 @@ class Input_Control(Control):
         "lookup": "CONTROL_TYPE_LOCATION_LOOKUP"
     }
 
-    def __init__(self, name, label, required=False, defaults=[], maxlength='', type="string", placeholder=None):
+    def __init__(self, name, label, required=False, defaults=[], maxlength='', type="string", placeholder='', message='', disabled=False):
         self.type = Input_Control.input_type[type]
         Control.__init__(self, name, label, required, defaults, self.type)
         self.maxlength = maxlength
-        self.placeholder = placeholder
+        self.placeholder = placeholder or message
+        self.disabled = disabled
 
     def __str__(self):
         indent = ' ' * 4
@@ -35,6 +36,8 @@ class Input_Control(Control):
             output += f'{indent}value: {self.value},\n'
         if self.placeholder:
             output += f'{indent}placeholder: "{self.placeholder}",\n'
+        if self.disabled:
+            output += f'{indent}disabled: true,\n'
 
         output += f'  }}'
         return output

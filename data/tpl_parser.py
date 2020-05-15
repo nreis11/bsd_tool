@@ -124,6 +124,11 @@ def create_controls(widget_type, data_dict, copies=1):
     elif widget_type == 'textarea_widget':
         data_dict["options"].append(
             ("type", "textarea"))
+    elif widget_type == 'warning_widget':
+        placeholder = list(
+            filter(lambda pair: pair[0] == "value", data_dict["options"]))[0][1]
+        data_dict["options"] = [('name', "Warning"), ("type", "textarea"), (
+            'label', "Warning"), ('placeholder', placeholder), ('disabled', True)]
     elif widget_type == 'email':
         data_dict["options"].append(("type", "email"))
     elif widget_type == 'input_date_calendar_widget':

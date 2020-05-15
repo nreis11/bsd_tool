@@ -67,6 +67,13 @@ const config = [
     type: CONTROL_TYPE_LOCATION_LOOKUP,
     label: "Advertising Location",
     value: "$default_location",
+  },
+  {
+    name: "Warning",
+    type: CONTROL_TYPE_TEXT,
+    label: "Warning",
+    placeholder: "* Additional charges applied by board if these fields are set to yes",
+    disabled: true,
   }
 ];
 
