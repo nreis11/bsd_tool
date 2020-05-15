@@ -13,7 +13,7 @@ class Input_Control(Control):
         "lookup": "CONTROL_TYPE_LOCATION_LOOKUP"
     }
 
-    def __init__(self, name, label, required=False, defaults=[], maxlength='', type="string", placeholder='', message='', disabled=False):
+    def __init__(self, name, label='', required=False, defaults=[], maxlength='', type="string", placeholder='', message='', disabled=False):
         self.type = Input_Control.input_type[type]
         Control.__init__(self, name, label, required, defaults, self.type)
         self.maxlength = maxlength

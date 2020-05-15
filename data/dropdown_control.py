@@ -4,7 +4,7 @@ from data.control import Control
 class Dropdown_Control(Control):
     """This can handle single or multi-tier dropdowns with multiple selections"""
 
-    def __init__(self, name, label, filename, required=False, parents=[], children=[], defaults=[], size=None):
+    def __init__(self, name, filename, label='', required=False, parents=[], children=[], defaults=[], size=None):
         self.type = 'CONTROL_TYPE_DROPDOWN'
         Control.__init__(self, name, label, required, defaults, self.type)
         self.filename = filename

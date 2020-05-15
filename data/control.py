@@ -61,7 +61,7 @@ class Control():
 
     def __init__(self, name, label, required, defaults, control_type):
         self.name = name
-        self.label = label
+        self.label = label or name
         self.required = required
         self.value = Control.get_formmatted_value(defaults)
 
