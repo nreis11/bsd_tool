@@ -51,12 +51,22 @@ def get_tuple(data):
     key, value = data.split("=")
     value = value.strip('\'" ')
     if '$' in value and not "$job" in value:
-        print(f'Warning: Replace {value} with value for prop {key}')
+        print(
+            f'Warning: Replace {value} with appropriate value for prop {key}')
     return (key, value)
 
 
 def get_default_list(default_values):
-    return default_values.split('|default:')
+    defaults = default_values.split('|default:')
+    cleaned_defaults = []
+    for default in defaults:
+        parsed = default.split('|')
+        value = parsed[0]
+        if len(parsed) > 1:
+            functions = ', '.join(parsed[1:])
+            print(f'Apply {functions} to {value}')
+        cleaned_defaults.append(value)
+    return cleaned_defaults
 
 
 def get_dropdown_dicts(data_dict):
