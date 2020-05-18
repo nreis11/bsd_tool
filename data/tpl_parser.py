@@ -84,7 +84,9 @@ def get_dropdown_dicts(data_dict):
                     label = c_label
         new_dropdown['label'] = label
         if 'default' in data_dict:
-            new_dropdown["defaults"] = [data_dict['default'][idx][1]]
+            for name, value in data_dict["default"]:
+                if name == option[0]:
+                    new_dropdown["defaults"] = [value]
         new_dropdown['parents'] = [option[0]
                                    for option in data_dict['options'][:idx]]
         new_dropdown['children'] = [option[0]
